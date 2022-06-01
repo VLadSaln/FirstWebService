@@ -40,6 +40,14 @@ services:
    ports:
     - '5000:5000'
    restart: unless-stopped
+  tracker:
+   container_name: tracker
+   build: ./Yolov5_DeepSort_Pytorch
+   volumes:
+    - ./Yolov5_DeepSort_Pytorch:/Yolov5_DeepSort_Pytorch
+   ports:
+    - '5001:5001'
+   restart: unless-stopped
 
 networks:
   postgres:
