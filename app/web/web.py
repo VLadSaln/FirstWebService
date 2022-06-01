@@ -1,11 +1,12 @@
 
 from flask import render_template, request, redirect
-from app import app
+from web import app
 import os
-from config import Config
+
 
 name = "Unknown User"
 
+app.config["VIDEO_UPLOADS"] = "/home/vladsal/FirstWebService/Yolov5_DeepSort_Pytorch/videos"
 
 @app.route("/upload-video", methods=["GET", "POST"])
 def upload():
