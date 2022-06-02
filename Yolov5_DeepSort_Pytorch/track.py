@@ -194,7 +194,7 @@ def detect(opt):
 
             # Stream results
             im0 = annotator.result()
-            if show_vid:
+            '''if show_vid:
                 global count
                 color=(0,255,0)
                 start_point = (0, h-350)
@@ -205,26 +205,17 @@ def detect(opt):
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 fontScale = 3
                 cv2.putText(im0, str(count), org, font, 
-                   fontScale, color, thickness, cv2.LINE_AA)
-                cv2.imshow(str(p), im0)
-                if cv2.waitKey(1) == ord('q'):  # q to quit
-                    raise StopIteration
-
+                   fontScale, color, thickness, cv2.LINE_AA)'''
+                #cv2.imshow(str(p), im0)
+            '''if cv2.waitKey(1) == ord('q'):  # q to quit
+                    raise StopIteration'''
+            pipe_out = 'appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=1200 speed-preset=superfast ! decodebin ! autovideoconvert ! theoraenc ! oggmux ! tcpserversink host=127.0.0.1 port=8082'
             # Save results (image with detections)
-            if save_vid:
-                if vid_path != save_path:  # new video
-                    vid_path = save_path
-                    if isinstance(vid_writer, cv2.VideoWriter):
-                        vid_writer.release()  # release previous video writer
-                    if vid_cap:  # video
-                        fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                        w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                        h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                    else:  # stream
-                        fps, w, h = 30, im0.shape[1], im0.shape[0]
-
-                    vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-                vid_writer.write(im0)
+            fps = vid_cap.get(cv2.CAP_PROP_FPS)
+            w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            vid_writer = cv2.VideoWriter(pipe_out, 0, 30, (w, h))
+            vid_writer.write(im0)
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
