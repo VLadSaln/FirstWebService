@@ -44,7 +44,7 @@ services:
    container_name: tracker
    build: ./Yolov5_DeepSort_Pytorch
    environment: 
-    - DISPLAY=unix$DISPLAY
+    - DISPLAY=$DISPLAY
    volumes:
     - ./Yolov5_DeepSort_Pytorch:/Yolov5_DeepSort_Pytorch
    ports:
