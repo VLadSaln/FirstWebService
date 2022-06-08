@@ -209,7 +209,7 @@ def detect(opt):
                 #cv2.imshow(str(p), im0)
             '''if cv2.waitKey(1) == ord('q'):  # q to quit
                     raise StopIteration'''
-            pipe_out = 'appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=1200 speed-preset=superfast ! decodebin ! autovideoconvert ! theoraenc ! oggmux ! tcpserversink host=127.0.0.1 port=8082'
+            pipe_out = 'appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=1200 speed-preset=superfast ! decodebin ! autovideoconvert ! theoraenc ! oggmux ! tcpserversink host=0.0.0.0 port=8082'
             # Save results (image with detections)
             fps = vid_cap.get(cv2.CAP_PROP_FPS)
             w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -218,13 +218,13 @@ def detect(opt):
             vid_writer.write(im0)
 
     # Print results
-    t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
-    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
-        per image at shape {(1, 3, *imgsz)}' % t)
-    if save_txt or save_vid:
-        print('Results saved to %s' % save_path)
-        if platform == 'darwin':  # MacOS
-            os.system('open ' + save_path)
+    #t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
+    #LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
+     #   per image at shape {(1, 3, *imgsz)}' % t)
+    #if save_txt or save_vid:
+     #   print('Results saved to %s' % save_path)
+      #  if platform == 'darwin':  # MacOS
+       #     os.system('open ' + save_path)
 
 def count_obj(box,w,h,id):
     global count,data

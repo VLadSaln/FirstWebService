@@ -43,10 +43,14 @@ services:
   tracker:
    container_name: tracker
    build: ./Yolov5_DeepSort_Pytorch
+   environment: 
+    - DISPLAY=unix$DISPLAY
    volumes:
     - ./Yolov5_DeepSort_Pytorch:/Yolov5_DeepSort_Pytorch
    ports:
-    - '5001:5001'
+    - '8082:8082'
+   networks:
+      - postgres
    restart: unless-stopped
 
 networks:

@@ -1,23 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Upload video{% endblock %}
+{% block title %}Video Stream{% endblock %}
 
 {% block main %}
 
 <div class="container">
     <div class="row">
         <div class="col">
-            <h1>Upload video</h1>
+            <h1><center>Video Stream</center></h1>
             <hr>
-            <form action="/upload-video" method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label>Select video</label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="video" id="video">
-                        <label class="custom-file-label" for="video"></label>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Upload video</button>
+            <form action="/upload-video" method="GET" enctype="multipart/form-data">
+                <video controls="controls" preload="auto" autoplay>
+                    <source src="http://tracker:8082">
+                </video>
             </form>
         </div>
     </div>
