@@ -8,7 +8,7 @@ os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
 import sys
 sys.path.insert(0, './yolov5')
-
+import psycopg2
 import argparse
 import os
 import platform
@@ -24,7 +24,7 @@ from yolov5.utils.downloads import attempt_download
 from yolov5.models.common import DetectMultiBackend
 from yolov5.utils.datasets import LoadImages, LoadStreams
 from yolov5.utils.general import (LOGGER, check_img_size, non_max_suppression, scale_coords, 
-                                  check_imshow, xyxy2xywh, increment_path)
+                                   xyxy2xywh, increment_path)
 from yolov5.utils.torch_utils import select_device, time_sync
 from yolov5.utils.plots import Annotator, colors
 from deep_sort.utils.parser import get_config
@@ -43,7 +43,6 @@ def detect(opt):
         opt.save_txt, opt.imgsz, opt.evaluate, opt.half, opt.project, opt.name, opt.exist_ok
     webcam = source == '0' or source.startswith(
         'rtsp') or source.startswith('http') or source.endswith('.txt')
-
     # initialize deepsort
     cfg = get_config()
     cfg.merge_from_file(opt.config_deepsort)
@@ -83,12 +82,11 @@ def detect(opt):
     # Set Dataloader
     vid_path, vid_writer = None, None
     # Check if environment supports image displays
-    if show_vid:
-        show_vid = check_imshow()
+   
 
     # Dataloader
     if webcam:
-        show_vid = check_imshow()
+        
         cudnn.benchmark = True  # set True to speed up constant image size inference
         dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt and not jit)
         bs = len(dataset)  # batch_size
@@ -165,13 +163,18 @@ def detect(opt):
                 # draw boxes for visualization
                 if len(outputs) > 0:
                     for j, (output, conf) in enumerate(zip(outputs, confs)):
-
+                        
                         bboxes = output[0:4]
                         id = output[4]
                         cls = output[5]
-                        #count
+                        conn = psycopg2.connect(dbname='vladsaldatabase', user='postgres', 
+                        password='postgres1234', host='localhost')
+                        cursor = conn.cursor()
+                        cursor.execute(f"INSERT INTO tracking_stats_table VALUES('{id}','face','{int(bboxes[0])}', '{int(bboxes[1])}', '{int(bboxes[2])}', '{int(bboxes[3])}');")
+                        conn.commit()
+                        count
                         count_obj(bboxes,w,h,id)
-                        c = int(cls)  # integer class
+                        c = int(cls)
                         label = f'{id} {names[c]} {conf:.2f}'
                         annotator.box_label(bboxes, label, color=colors(c, True))
 
@@ -210,7 +213,7 @@ def detect(opt):
             '''if cv2.waitKey(1) == ord('q'):  # q to quit
                     raise StopIteration'''
             pipe_out = 'appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=1200 speed-preset=superfast ! decodebin ! autovideoconvert ! theoraenc ! oggmux ! tcpserversink host=0.0.0.0 port=8082'
-            # Save results (image with detections)
+            
             fps = vid_cap.get(cv2.CAP_PROP_FPS)
             w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))

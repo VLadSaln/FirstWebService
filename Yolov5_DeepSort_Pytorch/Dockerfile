@@ -22,10 +22,6 @@ RUN apt-get update && \
     apt-get install -y gstreamer1.0-libav
 RUN apt-get update && \
     apt-get install -y gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
-RUN apt-get update && \
-    apt-get install -y libgtk2.0-dev
-RUN apt-get update && \
-    apt-get install -y pkg-config   
 RUN git clone https://github.com/opencv/opencv.git
 WORKDIR /src/opencv
 RUN git checkout 4.1.0
@@ -47,6 +43,8 @@ RUN make install
 RUN ldconfig
 WORKDIR /Yolov5_DeepSort_Pytorch
 COPY . /Yolov5_DeepSort_Pytorch
-
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc \
+    && pip install psycopg2
 RUN pip3 install -r requirements.txt 
 CMD [ "python3","track.py" ]

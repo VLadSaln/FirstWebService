@@ -43,10 +43,7 @@ services:
   tracker:
    container_name: tracker
    build: ./Yolov5_DeepSort_Pytorch
-   environment: 
-    - DISPLAY=$DISPLAY
-   volumes:
-    - ./Yolov5_DeepSort_Pytorch:/Yolov5_DeepSort_Pytorch
+  
    ports:
     - '8082:8082'
    networks:

@@ -230,7 +230,7 @@ class LoadImages:
 
     def new_video(self, path):
         self.frame = 0
-        self.cap = cv2.VideoCapture("filesrc location=/home/vladsal/FirstWebService/Yolov5_DeepSort_Pytorch/videos/video.mp4 ! decodebin ! videoconvert ! appsink", cv2.CAP_GSTREAMER)
+        self.cap = cv2.VideoCapture("filesrc location=./videos/video.mp4 ! decodebin ! videoconvert ! appsink", cv2.CAP_GSTREAMER)
         print(self.cap)
         self.frames = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
