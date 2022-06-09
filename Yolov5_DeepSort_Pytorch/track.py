@@ -105,6 +105,12 @@ def detect(opt):
     if pt and device.type != 'cpu':
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
     dt, seen = [0.0, 0.0, 0.0, 0.0], 0
+    pipe_out = 'appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=1200 speed-preset=superfast ! decodebin ! autovideoconvert ! theoraenc ! oggmux ! tcpserversink host=0.0.0.0 port=8082'
+    
+    fps = dataset.cap.get(cv2.CAP_PROP_FPS)
+    w = int(dataset.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    h = int(dataset.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    vid_writer = cv2.VideoWriter(pipe_out, 0, 30, (w, h))
     for frame_idx, (path, img, im0s, vid_cap, s) in enumerate(dataset):
         t1 = time_sync()
         img = torch.from_numpy(img).to(device)
@@ -212,12 +218,7 @@ def detect(opt):
                 #cv2.imshow(str(p), im0)
             '''if cv2.waitKey(1) == ord('q'):  # q to quit
                     raise StopIteration'''
-            pipe_out = 'appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=1200 speed-preset=superfast ! decodebin ! autovideoconvert ! theoraenc ! oggmux ! tcpserversink host=0.0.0.0 port=8082'
-            
-            fps = vid_cap.get(cv2.CAP_PROP_FPS)
-            w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            vid_writer = cv2.VideoWriter(pipe_out, 0, 30, (w, h))
+
             vid_writer.write(im0)
 
     # Print results
@@ -240,9 +241,9 @@ def count_obj(box,w,h,id):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--yolo_model', nargs='+', type=str, default='best.pt', help='model.pt path(s)')
+    parser.add_argument('--yolo_model', nargs='+', type=str, default='/Yolov5_DeepSort_Pytorch/best.pt', help='model.pt path(s)')
     parser.add_argument('--deep_sort_model', type=str, default='osnet_x0_25')
-    parser.add_argument('--source', type=str, default='videos/video.mp4', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--source', type=str, default='/Yolov5_DeepSort_Pytorch/videos/video.mp4', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--output', type=str, default='inference/output', help='output folder')  # output folder
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[480], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.5, help='object confidence threshold')
