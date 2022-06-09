@@ -174,7 +174,7 @@ def detect(opt):
                         id = output[4]
                         cls = output[5]
                         conn = psycopg2.connect(dbname='vladsaldatabase', user='postgres', 
-                        password='postgres1234', host='localhost')
+                        password='postgres1234', host='basic-postgres')
                         cursor = conn.cursor()
                         cursor.execute(f"INSERT INTO tracking_stats_table VALUES('{id}','face','{int(bboxes[0])}', '{int(bboxes[1])}', '{int(bboxes[2])}', '{int(bboxes[3])}');")
                         conn.commit()
